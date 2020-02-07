@@ -102,6 +102,7 @@ class UserController extends Controller
         //
     }
     public function UserFileUplaod($fileName,$path){
+        
         $fileNameToStore = time(). '.' . $fileName->getClientOriginalExtension();
         $destinationPath = public_path($path);
         $fileName->move($destinationPath, $fileNameToStore);
