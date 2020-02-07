@@ -7,6 +7,12 @@
                     <div class="alert alert-primary" v-if="message">
                         {{ message }}
                     </div>
+                    <p v-if="errors.length">
+    <b>Please correct the following error(s):</b>
+    <ul>
+      <li v-for="error in errors">{{ error }}</li>
+    </ul>
+  </p>
                     <div class="card-body">
                         <div class="form-group row mb-4">
                             <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">Name</label>
@@ -68,7 +74,7 @@
                         <div class="form-group row mb-4">
                             <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                             <div class="col-sm-12 col-md-7">
-                                <button v-bind:disabled="loading" @click="addUser" class="btn btn-primary"><span v-if="loading">Adding</span><span v-else>Add</span></button>
+                                <button v-bind:disabled="loading" @click="checkForm" class="btn btn-primary"><span v-if="loading">Adding</span><span v-else>Add</span></button>
                             </div>
                         </div>
                     </div>
@@ -110,7 +116,7 @@ export default {
             formData.append('zipcode', this.zipcode);
             formData.append('address', this.address);
             formData.append('file', this.file);
-            formData.append('img', this.file);
+            formData.append('img', this.img);
             axios.post('http://127.0.0.1:8000/add-form', 
                 formData,
                 {
@@ -127,21 +133,62 @@ export default {
                     _this.loading = false;
                 });
             },
+             clearimgfile(){
+                const input = this.$refs.img;
+                input.type = 'text';
+                input.type = 'file';
+            },
+            clearfilefile(){
+                const input = this.$refs.file;
+                input.type = 'text';
+                input.type = 'file';
+            },
             resetForm() {
                 this.name = '';
                 this.email = '';
                 this.phone = '';
                 this.address = '';
                 this.zipcode = '';
-                this.img = '';
-                this.file = '';
+                this.clearimgfile();
+                this.clearfilefile();
             },
             onChangeFileUpload(){
                 this.file = this.$refs.file.files[0];
             },
             onChangeImageUpload(){
                 this.img = this.$refs.img.files[0];
-            }
+            },
+            // new
+            checkForm: function (e) {
+      this.errors = [];
+
+     
+      if (!this.email) {
+        this.errors.push('Email required.');
+      } else if (!this.validEmail(this.email)) {
+        this.errors.push('Valid email required.');
+      }
+      if(!this.phone){
+        this.errors.push('Phone required.');
+      }else if(!this.validPhone(this.phone)){
+        this.errors.push('Valid Phone format required.');
+      }
+
+      if (!this.errors.length) {
+        this.addUser();
+      }
+
+      e.preventDefault();
+    },
+    validEmail: function (email) {
+      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
+      return re.test(email);
+    },
+    validPhone: function(phone) {
+    var re = /\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+    return re.test(phone);
+    }
+            //end
         }
     }
     </script>

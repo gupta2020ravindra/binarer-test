@@ -43,17 +43,22 @@ class UserController extends Controller
      */
     public function store(UserAddRequest $request)
     {
-        //dd($request->all());
-        if($request->file('img')){
-            $path = 'uploads/img';
-            $image_path = $this->UserFileUplaod($request->file('img'),$path);
-            array_merge($request->all(), ['img_path' => $image_path]);
-        }if($request->file('file')){
-            $path = 'uploads/files';
-            $file_path = $this->UserFileUplaod($request->file('file'),$path);
-            array_merge($request->all(), ['files_path' => $file_path]);
+        //dd($request->file('img'));
+        $image_path = null;
+        $file_path = null;
+        $postdata = $request->all();;
+
+        if($request->file('img') !== null){
+            $path = 'uploads/img/';
+            $image_path = $this->UserFileUplaod($request->file('img'),$path,'i');
+            $postdata['img_path'] = $image_path;
+        }if($request->file('file')!== null){
+            $path = 'uploads/files/';
+            $file_path = $this->UserFileUplaod($request->file('file'),$path,'f');
+            $postdata['files_path'] = $file_path;
         }
-        $user = User::create($request->all());
+       // dd($file_path.'&'.$image_path);
+        $user = User::create($postdata);
         return response()->json($user);
     }
 
@@ -101,9 +106,9 @@ class UserController extends Controller
     {
         //
     }
-    public function UserFileUplaod($fileName,$path){
-        
-        $fileNameToStore = time(). '.' . $fileName->getClientOriginalExtension();
+    public function UserFileUplaod($fileName,$path,$n){
+       // dd($fileName);
+        $fileNameToStore = $n.time(). '.' . $fileName->getClientOriginalExtension();
         $destinationPath = public_path($path);
         $fileName->move($destinationPath, $fileNameToStore);
         return $fileNameToStore;

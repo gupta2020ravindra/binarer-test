@@ -22,8 +22,8 @@ class UserAddRequest extends FormRequest
             'name' => 'required|min:3|max:255',
             'email' => 'required|email|unique:users',
             'phone' => 'required',
-            'address' => 'required|min:3',
-            'zipcode' => 'required|min:5|max:5'
+            'address' => 'required|min:3|max:255',
+            'zipcode' => 'required|numeric|min:5'
         ];
     }
 }

@@ -1988,6 +1988,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2020,7 +2026,7 @@ __webpack_require__.r(__webpack_exports__);
       formData.append('zipcode', this.zipcode);
       formData.append('address', this.address);
       formData.append('file', this.file);
-      formData.append('img', this.file);
+      formData.append('img', this.img);
       axios.post('http://127.0.0.1:8000/add-form', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -2036,21 +2042,62 @@ __webpack_require__.r(__webpack_exports__);
         _this.loading = false;
       });
     },
+    clearimgfile: function clearimgfile() {
+      var input = this.$refs.img;
+      input.type = 'text';
+      input.type = 'file';
+    },
+    clearfilefile: function clearfilefile() {
+      var input = this.$refs.file;
+      input.type = 'text';
+      input.type = 'file';
+    },
     resetForm: function resetForm() {
       this.name = '';
       this.email = '';
       this.phone = '';
       this.address = '';
       this.zipcode = '';
-      this.img = '';
-      this.file = '';
+      this.clearimgfile();
+      this.clearfilefile();
     },
     onChangeFileUpload: function onChangeFileUpload() {
       this.file = this.$refs.file.files[0];
     },
     onChangeImageUpload: function onChangeImageUpload() {
       this.img = this.$refs.img.files[0];
-    }
+    },
+    // new
+    checkForm: function checkForm(e) {
+      this.errors = [];
+
+      if (!this.email) {
+        this.errors.push('Email required.');
+      } else if (!this.validEmail(this.email)) {
+        this.errors.push('Valid email required.');
+      }
+
+      if (!this.phone) {
+        this.errors.push('Phone required.');
+      } else if (!this.validPhone(this.phone)) {
+        this.errors.push('Valid Phone format required.');
+      }
+
+      if (!this.errors.length) {
+        this.addUser();
+      }
+
+      e.preventDefault();
+    },
+    validEmail: function validEmail(email) {
+      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/;
+      return re.test(email);
+    },
+    validPhone: function validPhone(phone) {
+      var re = /\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
+      return re.test(phone);
+    } //end
+
   }
 });
 
@@ -37435,9 +37482,23 @@ var render = function() {
           _vm.message
             ? _c("div", { staticClass: "alert alert-primary" }, [
                 _vm._v(
-                  "\n                    " +
+                  "\n                      " +
                     _vm._s(_vm.message) +
-                    "\n                "
+                    "\n                  "
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.errors.length
+            ? _c("p", [
+                _c("b", [_vm._v("Please correct the following error(s):")]),
+                _vm._v(" "),
+                _c(
+                  "ul",
+                  _vm._l(_vm.errors, function(error) {
+                    return _c("li", [_vm._v(_vm._s(error))])
+                  }),
+                  0
                 )
               ])
             : _vm._e(),
@@ -37717,7 +37778,7 @@ var render = function() {
                   {
                     staticClass: "btn btn-primary",
                     attrs: { disabled: _vm.loading },
-                    on: { click: _vm.addUser }
+                    on: { click: _vm.checkForm }
                   },
                   [
                     _vm.loading
@@ -50067,8 +50128,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/html/binarer-test/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /var/www/html/binarer-test/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\binarer-test\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\binarer-test\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
